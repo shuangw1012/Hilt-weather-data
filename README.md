@@ -17,7 +17,6 @@ Source: BARRA-C2 dataset on NCI
 
 Required NCI project: ob53
 
-# Run the wind data extraction
 python BARRA2-Extract_BARRA_C2.py
 
 Solar Data
@@ -28,7 +27,6 @@ Source: Himawari satellite data on NCI
 
 Required NCI project: rv74
 
-# Run the solar data extraction
 python Himawari-Extract_Himawari.py
 
 2. Move Data Files
