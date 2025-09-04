@@ -1,10 +1,6 @@
 Project Overview
 
-The workflow uses:
-
-  BARRA-C2 reanalysis data for wind resource assessment
-  Himawari satellite data for solar resource assessment
-  PySAM for renewable generation simulations
+The workflow uses:BARRA-C2 reanalysis data for wind resource assessment; Himawari satellite data for solar resource assessment; PySAM for renewable generation simulations
 
 1. Data Extraction
 Wind Data: BARRA-C2 dataset on NCI
