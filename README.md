@@ -2,32 +2,16 @@ Project Overview
 
 The workflow uses:
 
-BARRA-C2 reanalysis data for wind resource assessment
-
-Himawari satellite data for solar resource assessment
-
-PySAM for renewable generation simulations
+  BARRA-C2 reanalysis data for wind resource assessment
+  Himawari satellite data for solar resource assessment
+  PySAM for renewable generation simulations
 
 1. Data Extraction
-Wind Data
-
-Script: BARRA2-Extract_BARRA_C2.py
-
-Source: BARRA-C2 dataset on NCI
-
+Wind Data: BARRA-C2 dataset on NCI
 Required NCI project: ob53
 
-python BARRA2-Extract_BARRA_C2.py
-
-Solar Data
-
-Script: Himawari-Extract_Himawari.py
-
-Source: Himawari satellite data on NCI
-
+Solar Data: Himawari satellite data on NCI
 Required NCI project: rv74
-
-python Himawari-Extract_Himawari.py
 
 2. Move Data Files
 
