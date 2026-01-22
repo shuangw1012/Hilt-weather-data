@@ -44,19 +44,26 @@ Users are expected to have:
 - Access to relevant data collections (`ob53`, `rv74`, etc.)
 
 ---
-## Environment setup on Gadi
+## 🖥️ Environment setup on Gadi
+
 Load Python on Gadi:
+
+```bash
 module load python3/3.10.0
 pip install --user --upgrade pip
 pip install --user -r requirements.txt
 export PATH=$HOME/.local/bin:$PATH
+```
 
-Scripts can be run interactively for small tests:
+Scripts can be run interactively for small tests (not for production runs):
+
+```bash
 cd BARRA2
-python BARRA2/Extract_BARRA_C2.py
+python Extract_BARRA_C2.py
+```
 
 ---
-## Workflow overview
+## 🧭 Workflow overview
 
 The full workflow consists of **three sequential stages**, which are typically run as **separate jobs on NCI Gadi**:
 1. **BARRA2 weather data extraction** (wind-related variables)
