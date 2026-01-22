@@ -41,11 +41,10 @@ This workflow is developed and tested on:
 
 Users are expected to have:
 - An active NCI account
-- Access to relevant data collections (e.g. `hh5`, `rt52`, etc.)
+- Access to relevant data collections (`ob53`, `rv74`, etc.)
 
 ---
 ## Environment setup on Gadi
-
 Load Python on Gadi:
 ```bash
 module load python3/3.10.0
@@ -54,4 +53,41 @@ pip install --user -r requirements.txt
 export PATH=$HOME/.local/bin:$PATH
 
 Scripts can be run interactively for small tests:
+cd BARRA2
 python BARRA2/Extract_BARRA_C2.py
+
+## Workflow overview
+
+The full workflow consists of **three sequential stages**, which are typically run as **separate jobs on NCI Gadi**:
+1. **BARRA2 weather data extraction** (wind-related variables)
+2. **Himawari weather data processing** (solar radiation)
+3. **PySAM execution** using the processed weather inputs
+
+These stages are intentionally separated due to data volume, runtime, and different data sources.
+## 1️BARRA2 processing (PBS job)
+- **Year selection** is defined **inside the Python script**
+- **Locations** are read from a user-provided **CSV file**
+BARRA2 processing should be run via a PBS job script on Gadi due to large
+input data size.
+Example: qsub jobscript-BARRA-test-SW
+
+## 2 Himawari processing (PBS job)
+- **Year selection** is defined **inside the Python script**
+- **Locations** are read from a user-provided **CSV file**
+
+## 3 Preparing weather inputs for PySAM
+After both BARRA2 and Himawari jobs complete successfully:
+Verify that years and locations match between the two datasets;
+Then manually move or copy the processed weather files into the PySAM-Python weather directory.
+
+## 4 Running PySAM (PBS job)
+Once the processed BARRA2 and Himawari weather files are in place under the PySAM-Python weather directory, the PySAM simulations should be run as
+**PBS jobs on NCI Gadi**.
+
+## Contact
+
+If you have any questions about the workflow, data sources, or running the code
+on NCI Gadi, please feel free to contact:
+
+**Shuang Wang**  
+📧 shuang.wang1@anu.edu.au
