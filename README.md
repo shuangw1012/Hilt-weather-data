@@ -44,11 +44,14 @@ Users are expected to have:
 - Access to relevant data collections (e.g. `hh5`, `rt52`, etc.)
 
 ---
+## Environment setup on Gadi
 
-## Python Environment Setup (NCI)
-
-### Load modules
-On Gadi, first load Python:
-
+Load Python on Gadi:
 ```bash
-module load python3/3.9.2
+module load python3/3.10.0
+pip install --user --upgrade pip
+pip install --user -r requirements.txt
+export PATH=$HOME/.local/bin:$PATH
+
+Scripts can be run interactively for small tests:
+python BARRA2/Extract_BARRA_C2.py
