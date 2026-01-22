@@ -51,12 +51,12 @@ module load python3/3.10.0
 pip install --user --upgrade pip
 pip install --user -r requirements.txt
 export PATH=$HOME/.local/bin:$PATH
-
+```md
 Scripts can be run interactively for small tests:
 ```bash
 cd BARRA2
 python BARRA2/Extract_BARRA_C2.py
-
+```md
 ---
 ## Workflow overview
 
