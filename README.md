@@ -36,12 +36,12 @@ It is intended for **solar, wind, and hybrid energy system modelling**.
 This workflow is developed and tested on:
 
 - **NCI Gadi (PBS Pro scheduler)**
-- Python **3.9+**
+- Python **3.10**
 - Large NetCDF datasets (tens to hundreds of GB)
 
 Users are expected to have:
 - An active NCI account
-- Access to relevant data collections (`ob53`, `rv74`, etc.)
+- Access to relevant data collections (`ob53`, `rv74`)
 
 ---
 ## 🖥️ Environment setup on Gadi
@@ -100,4 +100,4 @@ If you have any questions about the workflow, data sources, or running the code
 on NCI Gadi, please feel free to contact:
 
 **Shuang Wang**  
-📧 shuang.wang1@anu.edu.au
+📧 shuang.wang@anu.edu.au
