@@ -1,42 +1,54 @@
-# 🌤️ HILT Weather Data
+# HILT Weather Data (NCI / Gadi Workflow)
 
-This repository provides a workflow to build **weather datasets suitable for renewable energy simulations**.  
-It automates the extraction, processing, and formatting of meteorological data for use in tools such as **PySAM**.
+This repository provides a reproducible workflow to build **weather datasets for renewable energy simulations**, with a focus on **high-resolution Australian reanalysis and satellite data**.
+
+The workflow is designed to be run on **NCI Gadi**, where large meteorological datasets and high-performance compute resources are required.
 
 ---
 
-## 📍 Project Overview
+## Project Overview
 
-The workflow supports:
+This project automates:
 
 - Extraction of **BARRA-C2 reanalysis wind data**
-- Processing of **Himawari satellite solar data**
-- Organisation of outputs for **PySAM**
+- Processing of **Himawari satellite solar radiation data**
+- Formatting of weather time series for **PySAM**
+- Batch execution on **NCI Gadi** using PBS job scripts
 
-This project was developed in the context of **HILT CRC Energy Infrastructure project (RP3.007)**, but is designed to be reusable by others.
+It is intended for **solar, wind, and hybrid energy system modelling**.
 
 ---
 
-## 🌏 Data Sources
+## Data Sources
 
 | Dataset | Description |
 |-------|-------------|
-| **BARRA-C2** | High-resolution atmospheric reanalysis data (wind, pressure, temperature) |
+| **BARRA-C2** | Bureau of Meteorology atmospheric reanalysis (wind, temperature, pressure) |
 | **Himawari** | Geostationary satellite solar radiation products |
-| **Derived outputs** | Time-aligned weather series formatted for PySAM |
+| **Derived outputs** | Time-aligned, simulation-ready weather time series |
 
-> ⚠️ Raw datasets are large and are **not stored in this repository**.
+> Raw datasets are **not included** in this repository and must be accessed via NCI data collections.
 
 ---
 
-## 💻 Requirements
+## Computing Environment
 
-- Python **3.8+**
-- Common scientific Python libraries (`numpy`, `pandas`, `xarray`, etc.)
-- Access to BARRA and Himawari datasets
-- (Optional) **PySAM** for downstream simulations
+This workflow is developed and tested on:
 
-Install dependencies:
+- **NCI Gadi (PBS Pro scheduler)**
+- Python **3.9+**
+- Large NetCDF datasets (tens to hundreds of GB)
+
+Users are expected to have:
+- An active NCI account
+- Access to relevant data collections (e.g. `hh5`, `rt52`, etc.)
+
+---
+
+## Python Environment Setup (NCI)
+
+### Load modules
+On Gadi, first load Python:
 
 ```bash
-pip install -r requirements.txt
+module load python3/3.9.2
