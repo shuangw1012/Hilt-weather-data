@@ -53,9 +53,11 @@ pip install --user -r requirements.txt
 export PATH=$HOME/.local/bin:$PATH
 
 Scripts can be run interactively for small tests:
+```bash
 cd BARRA2
 python BARRA2/Extract_BARRA_C2.py
 
+---
 ## Workflow overview
 
 The full workflow consists of **three sequential stages**, which are typically run as **separate jobs on NCI Gadi**:
