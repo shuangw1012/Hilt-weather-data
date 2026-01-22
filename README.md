@@ -51,7 +51,7 @@ Load Python on Gadi:
 ```bash
 module load python3/3.10.0
 pip install --user --upgrade pip
-pip install --user -r requirements.txt
+pip install --user -r requirement.txt
 export PATH=$HOME/.local/bin:$PATH
 ```
 
