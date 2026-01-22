@@ -76,7 +76,10 @@ These stages are intentionally separated due to data volume, runtime, and differ
 - **Locations** are read from a user-provided **CSV file**
 BARRA2 processing should be run via a PBS job script on Gadi due to large
 input data size.
-Example: qsub jobscript-BARRA-test-SW
+Example:
+```bash
+qsub jobscript-BARRA-test-SW
+```
 
 ## 2 Himawari processing (PBS job)
 - **Year selection** is defined **inside the Python script**
