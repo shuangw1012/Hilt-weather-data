@@ -14,6 +14,7 @@ import shutil
 import pytz
 from timezonefinder import TimezoneFinder 
 import datetime
+import random
 
 def solar_local(lat,long,year):
     tz = TimezoneFinder()
@@ -74,7 +75,7 @@ def speed(Z,Z_anem,U_anem):
     U_H = U_anem * np.log(Z/Z0)/np.log(Z_anem/Z0)
     return(U_H)
 
-def WindResource(lat,long,year,hub_height=150):
+def WindResource(lat,long,year,random_number,hub_height=150):
     """
     Generates the wind source data for SAM based on the weather data 
     that is sourced from windlab stored in WEATHER folder
@@ -130,13 +131,13 @@ def WindResource(lat,long,year,hub_height=150):
     
     
     data_text = data.to_csv(header=False, index=False, lineterminator='\n')
-    text_file = open(path +  os.sep + 'input_file' + os.sep + "WindSource.srw", "w") # I got an error if use ./csv format for wind source
+    text_file = open(path +  os.sep + 'input_file' + os.sep + "WindSource_%s.srw"%random_number, "w") # I got an error if use ./csv format for wind source
     text_file.write(data_text)
     text_file.close()
     #print("Wind source data file was generated from Windlab database!")
 
 
-def wind_gen(lat,long,hub_height=150):
+def wind_gen(lat,long,random_number,hub_height=150):
     """
     Parameters
     ----------
@@ -153,20 +154,25 @@ def wind_gen(lat,long,hub_height=150):
     
     with open(os.getcwd() + os.sep + 'input_file' + os.sep + file_name + ".json", 'r') as file:
         data = json.load(file)
-        data['wind_resource_filename'] = os.getcwd() +  os.sep + 'input_file' + os.sep + 'WindSource.srw'
+        data['wind_resource_filename'] = os.getcwd() +  os.sep + 'input_file' + os.sep + 'WindSource_%s.srw'%random_number
         for k,v in data.items():
+            #print (k,v)
             if k != "number_inputs":
                 module.value(k, v)
     file.close()
+
     
     wind.Turbine.wind_turbine_hub_ht = hub_height
     wind.execute()
     output = np.array(wind.Outputs.gen)/320/1000
-    np.savetxt(os.getcwd() + os.sep + 'output' + os.sep  + 'wind_out_%s_%s.csv'%(lat,long), output, delimiter=',')
-    CF = sum(output)/8760# the reference plant size is 320 MW
-    print ('wind_gen finishes, CF=%s'%CF)
+    file_path = os.getcwd() +  os.sep + 'input_file' + os.sep + 'WindSource_%s.srw'%random_number
+    os.system(f'rm {file_path}')   
+    return output
+    #np.savetxt(os.getcwd() + os.sep + 'output' + os.sep  + 'wind_out_%s_%s.csv'%(lat,long), output, delimiter=',')
+    #CF = sum(output)/8760# the reference plant size is 320 MW
+    #print ('wind_gen finishes, CF=%s'%CF)
 
-def SolarResource(lat,long,year,hub_height=150):
+def SolarResource(lat,long,year,random_number,hub_height=150):
     """
     Parameters
     ----------
@@ -178,7 +184,7 @@ def SolarResource(lat,long,year,hub_height=150):
 
     """
     
-    new_file = os.getcwd() + os.sep + 'input_file' + os.sep + 'SolarSource.csv'
+    new_file = os.getcwd() + os.sep + 'input_file' + os.sep + 'SolarSource_%s.csv'%random_number
     shutil.copy(os.getcwd() + os.sep + 'input_file' + os.sep + 'SolarSource_sample.csv', new_file)
     df = pd.read_csv(os.getcwd() + os.sep + 'input_file' + os.sep + 'SolarSource_sample.csv')
     
@@ -216,7 +222,7 @@ def SolarResource(lat,long,year,hub_height=150):
     df.loc[2:, 'country'] = data_wind['Temperature'].values
     df.to_csv(new_file, index=False)
     
-def pv_gen(lat,long):
+def pv_gen(lat,long,random_number):
     """
     Parameters
     ----------
@@ -234,32 +240,58 @@ def pv_gen(lat,long):
     file_name = 'pvfarm_pvwattsv8'
     with open(os.getcwd() + os.sep + 'input_file' + os.sep + file_name + ".json", 'r') as file:
         data = json.load(file)
-        data['solar_resource_file'] = os.getcwd() + os.sep + 'input_file' + os.sep + 'SolarSource.csv'
+        data['solar_resource_file'] = os.getcwd() + os.sep + 'input_file' + os.sep + 'SolarSource_%s.csv'%random_number
         for k,v in data.items():
             if k != "number_inputs":
                 module.value(k, v)
         pv.execute()
         output = np.array(pv.Outputs.gen)/1/1000
-    np.savetxt(os.getcwd() + os.sep + 'output' + os.sep  + 'pv_out_%s_%s.csv'%(lat,long), output, delimiter=',')
-    CF = sum(output)/8760 # the reference plant size is 1 MW
-    print ('pv_gen finishes, CF=%s'%CF)
-    print ()
+    #np.savetxt(os.getcwd() + os.sep + 'output' + os.sep  + 'pv_out_%s_%s.csv'%(lat,long), output, delimiter=',')
+    #CF = sum(output)/8760 # the reference plant size is 1 MW
+    #print ('pv_gen finishes, CF=%s'%CF)
+    #print ()
+    return output
 
 if __name__=='__main__':
-    df = pd.read_csv(os.getcwd() + os.sep + 'Grid_SA.csv')
-    
-    # input
-    Location = df['Name'].values
-    year = 2019
-    
-    for i in range(len(Location)):
-        lat = df['Lat'].values[i]
-        long = df['Long'].values[i]
+    df_all = pd.read_csv(os.getcwd() + os.sep + 'Grid_SA.csv')
+    N_cpu = 10
+    num_opt = int(len(df_all)/N_cpu)+1
+    from mpi4py import MPI
+    for i in range(len(df_all)):
+        comm = MPI.COMM_WORLD
+        rank = comm.Get_rank()
+        if rank == i:
+            #try:
+            df = df_all.iloc[i*num_opt:(i+1)*num_opt]
+            # input
+            Location = df['Name'].values
+            Lat = df['Lat'].values
+            Long = df['Long'].values
+            year = 2017
+            
+            for j in range(len(Location)):
+                # try:
+                loc = Location[j] + '_' + str(year)
+                lat = Lat[j]
+                long = Long[j]
+                random_number = random.random()
+                wind_local(lat,long,year) # convert UTM to local time
+                WindResource(lat,long,year,random_number) # create windpower input file
+                wind_output = wind_gen(lat,long,random_number) # run windpower model, this will save the hourly output in the 'wind_out.csv' file
+                
+                solar_local(lat,long,year) # convert UTM to local time
+                SolarResource(lat,long,year,random_number) # create PVwatts input file
+                solar_output = pv_gen(lat,long,random_number) # run PVWatts model, this will save the hourly output in the 'pv_out.csv' file
+                
+                time_array = pd.date_range(start='%s-01-01'%year, periods=8760, freq='h')
         
-        wind_local(lat,long,year) # convert UTM to local time
-        WindResource(lat,long,year) # create windpower input file
-        wind_gen(lat,long) # run windpower model, this will save the hourly output in the 'wind_out.csv' file
-        
-        solar_local(lat,long,year) # convert UTM to local time
-        SolarResource(lat,long,year) # create PVwatts input file
-        pv_gen(lat,long) # run PVWatts model, this will save the hourly output in the 'pv_out.csv' file
+                # Create a DataFrame
+                data = {
+                    'DateTime': time_array,
+                    'Solar CF': solar_output,
+                    'Wind CF': wind_output
+                }
+                df = pd.DataFrame(data)
+                df.to_csv(os.getcwd()+os.sep+'%s_traces.csv'%(loc), index=False)
+                # except:
+                    # print (Lat[j],Long[j])

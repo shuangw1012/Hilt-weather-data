@@ -1,0 +1,23 @@
+#!/bin/sh
+#PBS -S /bin/sh
+#PBS -P ds12
+#PBS -q normal
+#PBS -l walltime=1:00:00,mem=30GB,ncpus=10
+#PBS -m abe
+#PBS -N Trace
+#PBS -o Trace.out
+#PBS -e Trace.err
+
+
+echo ""
+echo "start job script"
+module load python3/3.10.0
+module load netcdf/4.6.3
+module load openmpi/4.1.1
+
+
+export PYTHONPATH=$PYTHONPATH:/home/660/sw8035/.local/lib/python3.10/site-packages
+
+cd /scratch/ds12/sw8035/PySAM-python
+
+mpirun -np 10 python3 PySAM-python.py

@@ -24,7 +24,7 @@ def Extract(df_RE,index1):
     coor_PV_x = df_RE['Lat'].values
     coor_PV_y = df_RE['Long'].values
     location_coords = list(zip(coor_PV_x, coor_PV_y))
-    years = [2019]
+    years = [2017]
 
     # Initialize results per location
     location_results = [{"Lat": lat, "Long": lon} for i, (lat, lon) in enumerate(location_coords)]
@@ -42,7 +42,7 @@ def Extract(df_RE,index1):
                 print(f"  {year}-{month_str}-{day_str}")
                 
                 # Select correct path
-                if year >= 2019 and month >= 4:
+                if (year > 2019) or (year == 2019 and month >= 4):
                     workdir = f'/g/data/rv74/satellite-products/arc/der/himawari-ahi/solar/p1h/latest/{year}/{month_str}/{day_str}'
                 else:
                     workdir = f'/g/data/rv74/satellite-products/arc/der/himawari-ahi/solar/p1h/v1.0/{year}/{month_str}/{day_str}'
@@ -113,9 +113,9 @@ def Extract(df_RE,index1):
                 ts_df.to_csv(f"BOM-output-{lat}-{lon}-{year}.csv", index=True)
     
     # Save results
-    df_out = pd.DataFrame(location_results)
-    df_out.to_csv("Himawari_SGI_DNI_%s.csv"%index1, index=False)
-    print("\nSaved data to Himawari_SGI_DNI_2016_2023.csv")
+    #df_out = pd.DataFrame(location_results)
+    #df_out.to_csv("Himawari_SGI_DNI_%s.csv"%index1, index=False)
+    #print("\nSaved data to Himawari_SGI_DNI_2016_2023.csv")
 
 
 if __name__=='__main__':
