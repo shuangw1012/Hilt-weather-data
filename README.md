@@ -44,7 +44,7 @@ Users are expected to have:
 - Access to relevant data collections (`ob53`, `rv74`)
 
 ---
-## 🖥️ Environment setup on Gadi
+## Environment setup on Gadi
 
 Load Python on Gadi:
 
@@ -63,7 +63,7 @@ python Extract_BARRA_C2.py
 ```
 
 ---
-## 🧭 Workflow overview
+## Workflow overview
 
 The full workflow consists of **three sequential stages**, which are typically run as **separate jobs on NCI Gadi**:
 1. **BARRA2 weather data extraction** (wind-related variables)
@@ -71,7 +71,7 @@ The full workflow consists of **three sequential stages**, which are typically r
 3. **PySAM execution** using the processed weather inputs
 
 These stages are intentionally separated due to data volume, runtime, and different data sources.
-## 1️BARRA2 processing (PBS job)
+## 1 BARRA2 processing (PBS job)
 - **Year selection** is defined **inside the Python script**
 - **Locations** are read from a user-provided **CSV file**
 BARRA2 processing should be run via a PBS job script on Gadi due to large
